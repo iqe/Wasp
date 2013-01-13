@@ -22,6 +22,46 @@ void Wasp::sendMessage(char *content, int length) {
   serial->write(WASP_EFLAG);
 }
 
+void Wasp::begin(int baudrate) {
+  serial->begin(baudrate);
+}
+
+int Wasp::readMessage(char *buffer, int bufsize) {
+  if (!serial->available()) {
+    return -1;
+  }
+
+  char c;
+  int contentLength = 0;
+  bool inMessage, afterEsc = false;
+
+  while (contentLength <= bufsize) {
+    c = serial->read();
+
+    if (c == WASP_SFLAG) {
+      inMessage = true;
+      contentLength = 0;
+    } else if (c == WASP_EFLAG) {
+      if (inMessage) {
+        return contentLength;
+      }
+      inMessage = false;
+    } else if (c == WASP_ESC) {
+      afterEsc = true;
+    } else {
+      if (inMessage) {
+        if (afterEsc) {
+          c ^= WASP_ESC_XOR;
+          afterEsc = false;
+        }
+        buffer[contentLength++] = c;
+      }
+    }
+  }
+
+  return -2;
+}
+
 void Wasp::writeContent(char *content, int length) {
   char c;
 

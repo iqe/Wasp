@@ -7,7 +7,9 @@ class Wasp {
 
 public:
   Wasp(HardwareSerial *serial);
+  void begin(int baudrate);
   void sendMessage(char *content, int length);
+  int readMessage(char *buffer, int bufSize);
 
 private:
   void writeContent(char *content, int length);
