@@ -8,6 +8,7 @@ class Wasp {
 public:
   Wasp(HardwareSerial *serial);
   void begin(int baudrate);
+  bool available();
   void sendMessage(char *content, int length);
   int readMessage(char *buffer, int bufSize);
 

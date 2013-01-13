@@ -26,8 +26,12 @@ void Wasp::begin(int baudrate) {
   serial->begin(baudrate);
 }
 
+bool Wasp::available() {
+  return serial->available() > 0;
+}
+
 int Wasp::readMessage(char *buffer, int bufsize) {
-  if (!serial->available()) {
+  if (!available()) {
     return -1;
   }
 
