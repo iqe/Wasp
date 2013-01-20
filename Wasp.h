@@ -7,8 +7,8 @@ class Wasp {
 
 public:
   Wasp(HardwareSerial *serial);
+  Wasp(HardwareSerial *serial, int timeout);
   void begin(int baudrate);
-  bool available();
   void sendMessage(char *content, int length);
   int readMessage(char *buffer, int bufSize);
 
@@ -17,6 +17,7 @@ private:
   void writeCrc(char *content, int length);
 
   HardwareSerial *serial;
+  int timeout;
 };
 
 #endif

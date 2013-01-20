@@ -6,6 +6,8 @@
 
 #include "Wasp.h"
 
+#define WASP_DEFAULT_TIMEOUT 100
+
 #define WASP_SFLAG   0x61 // 'a'
 #define WASP_EFLAG   0x7a // 'z'
 #define WASP_ESC     0x5c // '\'
@@ -13,6 +15,12 @@
 
 Wasp::Wasp(HardwareSerial *serial) {
   this->serial = serial;
+  this->timeout = WASP_DEFAULT_TIMEOUT;
+}
+
+Wasp::Wasp(HardwareSerial *serial, int timeout) {
+  this->serial = serial;
+  this->timeout = timeout;
 }
 
 void Wasp::sendMessage(char *content, int length) {
@@ -26,39 +34,45 @@ void Wasp::begin(int baudrate) {
   serial->begin(baudrate);
 }
 
-bool Wasp::available() {
-  return serial->available() > 0;
-}
-
 int Wasp::readMessage(char *buffer, int bufsize) {
-  if (!available()) {
-    return -1;
-  }
-
   char c;
   int contentLength = 0;
   bool inMessage, afterEsc = false;
+  long lastByteTimestamp = millis();
 
   while (contentLength <= bufsize) {
-    c = serial->read();
+    if (millis() - lastByteTimestamp > timeout) {
+      return -1;
+    }
 
-    if (c == WASP_SFLAG) {
-      inMessage = true;
-      contentLength = 0;
-    } else if (c == WASP_EFLAG) {
-      if (inMessage) {
-        return contentLength;
-      }
-      inMessage = false;
-    } else if (c == WASP_ESC) {
-      afterEsc = true;
-    } else {
-      if (inMessage) {
-        if (afterEsc) {
-          c ^= WASP_ESC_XOR;
-          afterEsc = false;
-        }
-        buffer[contentLength++] = c;
+    if (serial->available() > 0) {
+      c = serial->read();
+      lastByteTimestamp = millis();
+
+      switch (c) {
+        case -1:
+          return -1;
+        case WASP_SFLAG:
+          inMessage = true;
+          contentLength = 0;
+          break;
+        case WASP_EFLAG:
+          if (inMessage) {
+            return contentLength;
+          }
+          inMessage = false;
+          break;
+        case WASP_ESC:
+          afterEsc = true;
+          break;
+        default:
+          if (inMessage) {
+            if (afterEsc) {
+              c ^= WASP_ESC_XOR;
+              afterEsc = false;
+            }
+            buffer[contentLength++] = c;
+          }
       }
     }
   }
