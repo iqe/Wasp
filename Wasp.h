@@ -2,6 +2,7 @@
 #define Wasp_h
 
 #include "HardwareSerial.h"
+#include "crc16_ccitt.h"
 
 class Wasp {
 
@@ -15,6 +16,7 @@ public:
 private:
   void writeContent(char *content, int length);
   void writeCrc(char *content, int length);
+  crc_t crc16(char *content, int length);
 
   HardwareSerial *serial;
   int timeout;
