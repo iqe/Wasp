@@ -100,8 +100,8 @@ void Wasp::writeCrc(char *content, int length) {
   uint8_t high = highByte(crc);
   uint8_t low = lowByte(crc);
 
-  serial->write(high);
   serial->write(low);
+  serial->write(high);
 }
 
 crc_t Wasp::crc16(char *content, int length) {
