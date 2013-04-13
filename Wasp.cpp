@@ -97,8 +97,8 @@ void Wasp::writeContent(char *content, int length) {
 
 void Wasp::writeCrc(char *content, int length) {
   crc_t crc = crc16(content, length);
-  uint8_t high = (crc >> 8);
-  uint8_t low = (uint8_t)crc;
+  uint8_t high = highByte(crc);
+  uint8_t low = lowByte(crc);
 
   serial->write(high);
   serial->write(low);
