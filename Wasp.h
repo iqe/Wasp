@@ -16,6 +16,7 @@ public:
 private:
   void writeContent(char *content, int length);
   void writeCrc(char *content, int length);
+  int checkCrc(char *content, int length);
   crc_t crc16(char *content, int length);
 
   HardwareSerial *serial;

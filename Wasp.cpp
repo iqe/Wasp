@@ -59,7 +59,7 @@ int Wasp::readMessage(char *buffer, int bufsize) {
           break;
         case WASP_EFLAG:
           if (inMessage) {
-            return contentLength;
+            return checkCrc(buffer, contentLength);
           }
           inMessage = false;
           break;
@@ -102,6 +102,20 @@ void Wasp::writeCrc(char *content, int length) {
 
   serial->write(low);
   serial->write(high);
+}
+
+int Wasp::checkCrc(char *content, int length) {
+  if (length < 2) { // too small for crc
+    return -1;
+  }
+
+  uint8_t low = content[length - 2];
+  uint8_t high = content[length - 1];
+
+  crc_t expectedCrc = ((uint16_t)high) << 8 | low;
+  crc_t actualCrc = crc16(content, length - 2);
+
+  return expectedCrc == actualCrc ? length - 2 : -1;
 }
 
 crc_t Wasp::crc16(char *content, int length) {
