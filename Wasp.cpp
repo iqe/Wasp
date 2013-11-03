@@ -85,13 +85,7 @@ void Wasp::writeContent(char *content, int length) {
   char c;
 
   for (int i = 0; i < length; i++) {
-    c = content[i];
-    if (c == WASP_SFLAG || c == WASP_EFLAG || c == WASP_ESC) {
-      serial->write(WASP_ESC);
-      serial->write(c ^ WASP_ESC_XOR);
-    } else {
-      serial->write(c);
-    }
+    writeByte(content[i]);
   }
 }
 
@@ -100,8 +94,17 @@ void Wasp::writeCrc(char *content, int length) {
   uint8_t high = highByte(crc);
   uint8_t low = lowByte(crc);
 
-  serial->write(low);
-  serial->write(high);
+  writeByte(low);
+  writeByte(high);
+}
+
+void Wasp::writeByte(uint8_t b) {
+  if (b == WASP_SFLAG || b == WASP_EFLAG || b == WASP_ESC) {
+    serial->write(WASP_ESC);
+    serial->write(b ^ WASP_ESC_XOR);
+  } else {
+    serial->write(b);
+  }
 }
 
 int Wasp::checkCrc(char *content, int length) {
