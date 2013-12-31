@@ -38,7 +38,7 @@ int Wasp::readMessage(char *buffer, int bufsize) {
 
   while (contentLength <= bufsize) {
     if (millis() - lastByteTimestamp > timeout) {
-      return -1;
+      return -3;
     }
 
     if (serial->available() > 0) {
