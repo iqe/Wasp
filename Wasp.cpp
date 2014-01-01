@@ -33,7 +33,7 @@ void Wasp::begin(int baudrate) {
 int Wasp::readMessage(char *buffer, int bufsize) {
   int c;
   int contentLength = 0;
-  bool inMessage, afterEsc = false;
+  bool inMessage = false, afterEsc = false;
   long lastByteTimestamp = millis();
 
   while (contentLength <= bufsize) {
