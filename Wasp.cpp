@@ -26,7 +26,7 @@ void Wasp::sendMessage(uint8_t *content, int length) {
   serial->write(WASP_EFLAG);
 }
 
-void Wasp::begin(int baudrate) {
+void Wasp::begin(long baudrate) {
   serial->begin(baudrate);
 }
 

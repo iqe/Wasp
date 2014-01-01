@@ -9,7 +9,7 @@ class Wasp {
 public:
   Wasp(HardwareSerial *serial);
   Wasp(HardwareSerial *serial, int timeout);
-  void begin(int baudrate);
+  void begin(long baudrate);
   void sendMessage(uint8_t *content, int length);
   int readMessage(uint8_t *buffer, int bufSize);
 
