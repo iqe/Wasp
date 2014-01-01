@@ -34,7 +34,7 @@ int Wasp::readMessage(uint8_t *buffer, int bufsize) {
   int c;
   int contentLength = 0;
   bool inMessage = false, afterEsc = false;
-  long lastByteTimestamp = millis();
+  unsigned long lastByteTimestamp = millis();
 
   while (contentLength <= bufsize) {
     if (millis() - lastByteTimestamp > timeout) {
