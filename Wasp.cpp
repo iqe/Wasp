@@ -105,10 +105,10 @@ int Wasp::checkCrc(uint8_t *content, int length) {
     return -1;
   }
 
-  uint8_t low = content[length - 2];
-  uint8_t high = content[length - 1];
+  uint16_t low = content[length - 2];
+  uint16_t high = content[length - 1];
 
-  crc_t expectedCrc = ((uint16_t)high) << 8 | low;
+  crc_t expectedCrc = (high << 8) | low;
   crc_t actualCrc = crc16(content, length - 2);
 
   return expectedCrc == actualCrc ? length - 2 : -1;
