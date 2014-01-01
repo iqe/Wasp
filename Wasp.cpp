@@ -77,8 +77,6 @@ int Wasp::readMessage(char *buffer, int bufsize) {
 }
 
 void Wasp::writeContent(char *content, int length) {
-  char c;
-
   for (int i = 0; i < length; i++) {
     writeByte(content[i]);
   }
