@@ -10,15 +10,15 @@ public:
   Wasp(HardwareSerial *serial);
   Wasp(HardwareSerial *serial, int timeout);
   void begin(long baudrate);
-  void sendMessage(uint8_t *content, int length);
-  int readMessage(uint8_t *buffer, int bufSize);
+  void sendMessage(unsigned char *content, int length);
+  int readMessage(unsigned char *buffer, int bufSize);
 
 private:
-  void writeContent(uint8_t *content, int length);
-  void writeCrc(uint8_t *content, int length);
-  void writeByte(uint8_t b);
-  int checkCrc(uint8_t *content, int length);
-  crc_t crc16(uint8_t *content, int length);
+  void writeContent(unsigned char *content, int length);
+  void writeCrc(unsigned char *content, int length);
+  void writeByte(unsigned char b);
+  int checkCrc(unsigned char *content, int length);
+  crc_t crc16(unsigned char *content, int length);
 
   HardwareSerial *serial;
   int timeout;
