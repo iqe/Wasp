@@ -19,7 +19,7 @@ Wasp::Wasp(HardwareSerial *serial, int timeout) {
   this->timeout = timeout;
 }
 
-void Wasp::sendMessage(char *content, int length) {
+void Wasp::sendMessage(uint8_t *content, int length) {
   serial->write(WASP_SFLAG);
   writeContent(content, length);
   writeCrc(content, length);
@@ -30,7 +30,7 @@ void Wasp::begin(int baudrate) {
   serial->begin(baudrate);
 }
 
-int Wasp::readMessage(char *buffer, int bufsize) {
+int Wasp::readMessage(uint8_t *buffer, int bufsize) {
   int c;
   int contentLength = 0;
   bool inMessage = false, afterEsc = false;
@@ -76,13 +76,13 @@ int Wasp::readMessage(char *buffer, int bufsize) {
   return -2;
 }
 
-void Wasp::writeContent(char *content, int length) {
+void Wasp::writeContent(uint8_t *content, int length) {
   for (int i = 0; i < length; i++) {
     writeByte(content[i]);
   }
 }
 
-void Wasp::writeCrc(char *content, int length) {
+void Wasp::writeCrc(uint8_t *content, int length) {
   crc_t crc = crc16(content, length);
   uint8_t high = highByte(crc);
   uint8_t low = lowByte(crc);
@@ -100,7 +100,7 @@ void Wasp::writeByte(uint8_t b) {
   }
 }
 
-int Wasp::checkCrc(char *content, int length) {
+int Wasp::checkCrc(uint8_t *content, int length) {
   if (length < 2) { // too small for crc
     return -1;
   }
@@ -114,9 +114,9 @@ int Wasp::checkCrc(char *content, int length) {
   return expectedCrc == actualCrc ? length - 2 : -1;
 }
 
-crc_t Wasp::crc16(char *content, int length) {
+crc_t Wasp::crc16(uint8_t *content, int length) {
   crc_t crc = crc_init();
-  crc = crc_update(crc, (unsigned char *)content, length);
+  crc = crc_update(crc, content, length);
   crc = crc_finalize(crc);
 
   return crc;
